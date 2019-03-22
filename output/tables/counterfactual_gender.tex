@@ -1,0 +1,37 @@
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{2pt}
+\begin{table}[htp]
+\begin{threeparttable}
+\caption{Estimated changes in life expectancy gaps between richest and poorest quartiles\tnote{1}\newline(N = 1559 counties)}
+\label{stan_counterfactual_gender}
+\centering
+\scriptsize
+\begin{tabular}{l D{.}{.}{5.11} D{.}{.}{5.11} D{.}{.}{5.11} D{.}{.}{5.11} D{.}{.}{5.11} D{.}{.}{5.11}}
+\hline
+\addlinespace
+& \multicolumn{3}{c}{Baseline} & \multicolumn{3}{c}{Additional covariates} \\
+ & \multicolumn{1}{c}{Actual\tnote{2}} & \multicolumn{1}{c}{Counterfactual\tnote{3}} & \multicolumn{1}{c}{Difference\tnote{4}}
+& \multicolumn{1}{c}{Actual} & \multicolumn{1}{c}{Counterfactual} & \multicolumn{1}{c}{Difference} \\
+\addlinespace
+\hline 
+\addlinespace
+ Women & 5.49 & 4.29 & 1.20 & 5.45 & 4.39 & 1.05 \\
+  & [5.04;\ 5.99] & [3.48;\ 5.08] & [0.57;\ 1.90] & [4.42;\ 6.48] & [3.28;\ 5.58] & [0.49;\ 1.63] \\
+ 
+\addlinespace
+ Men & 8.50 & 6.79 & 1.68 & 8.48 & 7.09 & 1.36 \\
+  & [7.73;\ 9.20] & [5.98;\ 7.79] & [0.79;\ 2.61] & [6.90;\ 9.76] & [5.61;\ 8.49] & [0.65;\ 2.12] \\
+ \addlinespace[5pt]
+\hline
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\scriptsize
+\item [1] Two separated  models (one per income quartile). 95\% credibility intervals in brackets.
+           Baseline models adjust for log county population sizeand log income. Additional covariates models adjust for log county population size, log income, log \% Black,
+          log \% Hispanic, log unemployment, z-score income segregation, z-score \% uninsured, and z-score Medicare expenses.
+\item [2] Predicted life expectancy gaps between the richest and poorest income quartiles using actual data.
+\item [3] Predicted gaps under a counterfactual scenario where all counties have same level of income mobility as the best performing county on this measure.
+\item [4] Difference between actual and counterfactual predictions.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
