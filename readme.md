@@ -2,6 +2,6 @@
 
 - [Tables with results](https://www.overleaf.com/read/bgdrnkfrtnqp)
 
-## Direction to reproduce
+## Reproduce analysis
 
--
+- `src` folder contains all the code and functions to reproduce the analysis
