@@ -4,8 +4,8 @@
 
 ## Reproduce analysis
 
-- `src` contains all the code and functions to reproduce the analysis
--  Set the working directory as the main folder of the repository in R, and then run the `source.R` file
+- `src` contains all the code and functions to reproduce the analysis.
+-  In `R`, set the working directory as the main folder of the repository. Then run the `source.R` file.
 
 ## Priors
 
