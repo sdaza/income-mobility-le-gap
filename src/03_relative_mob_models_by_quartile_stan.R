@@ -12,13 +12,11 @@ library(texreg)
 library(stringr)
 
 # functions
-source('related_projects/health_inequality_project/src/utils/extract_stan.R')
-source('related_projects/health_inequality_project/src/utils/check_convergence.R')
-# source('related_projects/health_inequality_project/src/utils/simulation_no_random_effects.R')
-# source('related_projects/health_inequality_project/src/utils/simulation_no_random_effects.R')
+source('src/utils/extract_stan.R')
+source('src/utils/check_convergence.R')
 
 # load data
-df = readRDS('related_projects/health_inequality_project/data/le_cov_sel.rds')
+df = readRDS('data/le_cov_sel.rds')
 ncounties = length(unique(df$county))
 
 # auxiliary variables
@@ -94,7 +92,6 @@ for (i in 1:4) {
 
 # create tables with results
 # relative mobility
-
 for (i in 1:4) {
     cmodels <- c('Base Model', 'Base Model + Covariates', 'Base Model', 'Base Model + Covariates')
     models <- list(get(paste0('f1_', i)),
@@ -178,7 +175,7 @@ cat(heading,
     sep[[3]], out[[3]],
     sep[[4]], out[[4]],
     bottom,
-    file = 'related_projects/health_inequality_project/output/tables/stan_relative_mob_models.tex')
+    file = 'output/tables/stan_relative_mob_models.tex')
 
 # supplementary table with covariates
 cmodels <- c('Women Q1', 'Women Q4', 'Men Q1', 'Men Q4')
@@ -202,7 +199,7 @@ texreg(models,
        include.r2 = TRUE,
        ci.test = FALSE,
        float.pos = "htp",
-       caption = paste0("Estimates of association between life expectancy at age 40
+       caption = paste0("Covariate coefficients of models estimating the association between life expectancy at age 40
        \\newline and relative income mobility (N = ", ncounties, " counties)"),
        booktabs = TRUE,
        use.packages = FALSE,
@@ -216,7 +213,7 @@ texreg(models,
        custom.coef.map = cnames,
        groups = list("\\addlinespace\n\\textit{Random Effects}" = 11),
        custom.note = "Each column corresponds to an estimated model. 95\\% credibility intervals in brackets. Q1 = lowest income quartile, Q4 = highest income quartile, z = standardized values.",
-       file = 'related_projects/health_inequality_project/output/tables/stan_relative_mob_models_cov.tex')
+       file = 'output/tables/stan_relative_mob_models_cov.tex')
 
 
 # predicted values
@@ -407,5 +404,5 @@ cat(heading,
     sep[[1]], tabs[[1]], tabs[[2]],
     sep[[1]], tabs[[3]], tabs[[4]],
     bottom,
-    file = 'related_projects/health_inequality_project/output/tables/counterfactual_gender.tex')
+    file = 'output/tables/counterfactual_gender.tex')
 

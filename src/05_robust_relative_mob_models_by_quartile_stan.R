@@ -1,7 +1,6 @@
 ##############################
 # stan models by quartile
-# relative mobility
-# robust models
+# relative mobility robust models
 # author: sebastian daza
 ##############################
 
@@ -13,13 +12,11 @@ library(texreg)
 library(stringr)
 
 # functions
-source('related_projects/health_inequality_project/src/utils/check_convergence.R')
-source('related_projects/health_inequality_project/src/utils/extract_stan.R')
-# source('related_projects/health_inequality_project/src/utils/simulation_no_random_effects.R')
-# source('related_projects/health_inequality_project/src/utils/simulation_no_random_effects.R')
+source('src/utils/check_convergence.R')
+source('src/utils/extract_stan.R')
 
 # load data
-df = readRDS('related_projects/health_inequality_project/data/le_cov_sel.rds')
+df = readRDS('data/le_cov_sel.rds')
 ncounties = length(unique(df$county))
 
 # auxiliry variables
@@ -91,9 +88,7 @@ for (i in 1:4) {
     assign(model_name, fit)
 }
 
-# create tables with results
-# relative mobility
-
+# create tables
 for (i in 1:4) {
     cmodels <- c('Base Model', 'Base Model + Covariates', 'Base Model', 'Base Model + Covariates')
     models <- list(get(paste0('f1_', i)),
@@ -176,6 +171,6 @@ cat(heading,
     sep[[3]], out[[3]],
     sep[[4]], out[[4]],
     bottom,
-    file = 'related_projects/health_inequality_project/output/tables/stan_robust_models.tex')
+    file = 'output/tables/stan_robust_models.tex')
 
 # end
