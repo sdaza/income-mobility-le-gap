@@ -17,4 +17,4 @@
 8                              sd                state
 9                              sd      Intercept state
 10  student_t(3, 0, 10)     sigma
-``
+```
