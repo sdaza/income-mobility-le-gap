@@ -4,4 +4,4 @@
 
 ## Reproduce analysis
 
-- `src` folder contains all the code and functions to reproduce the analysis
+- `src` contains all the code and functions to reproduce the analysis
