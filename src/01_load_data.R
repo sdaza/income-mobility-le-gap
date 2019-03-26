@@ -9,7 +9,7 @@ library(sdazar)
 library(haven)
 
 # read data covariates
-cov = read_stata('data/cty_full_covariates.dta')
+cov = haven::read_stata('data/cty_full_covariates.dta')
 cov = data.table(cov)
 
 # rename columns
@@ -59,7 +59,7 @@ cov = cov[complete.cases(cov[, .(relative_mob, absolute_mob, income, gini)])]
 length(unique(cov$county))
 
 # le database
-le = read_stata('data/cty_leBY_gnd_hhincquartile.dta')
+le = haven::read_stata('data/cty_leBY_gnd_hhincquartile.dta')
 le = data.table(le)
 
 le[, income_q := paste0('Q', hh_inc_q)]

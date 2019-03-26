@@ -18,3 +18,8 @@
 9                              sd      Intercept state
 10  student_t(3, 0, 10)     sigma
 ```
+
+## Packages need to be installed
+
+- `data.table`, `brms`, `ggplot2`, `ggthemes`, `texreg`, `sdazar`,
+  `haven`, `xtable`, `stringr`
