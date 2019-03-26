@@ -350,7 +350,7 @@ heading = paste0('\\renewcommand{\\arraystretch}{1.5}\n
 \\addlinespace\n
 \\hline')
 
-heading =  gsub("\n\n", "\n", heading)
+heading = gsub("\n\n", "\n", heading)
 
 bottom = '\\addlinespace[5pt]\n
 \\hline\n
@@ -367,11 +367,11 @@ bottom = '\\addlinespace[5pt]\n
 \\end{threeparttable}\n
 \\end{table}'
 
-bottom =  gsub("\n\n", "\n", bottom)
+bottom = gsub("\n\n", "\n", bottom)
 
 sep = NA
 for (i in 1:4) {
-  sep[i] = "\n\\addlinespace\n"
+    sep[i] = "\n\\addlinespace\n"
 }
 
 tabs = list(female_row_1, female_row_2, male_row_1, male_row_2)

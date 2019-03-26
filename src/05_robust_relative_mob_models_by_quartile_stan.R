@@ -31,11 +31,8 @@ df[, z_relative_mob := z_relative_mob * -1.0]
 female = df[gender=='F']
 male = df[gender=='M']
 
-# run models by gender and quartile
 # baseline mode
 # male
-
-# run models per income quartile
 for (i in 1:4) {
     print(paste0(':::: model male quartile ', i))
     fit = brm(le ~ z_relative_mob + z_gini + log_population + log_income +
@@ -48,7 +45,6 @@ for (i in 1:4) {
 }
 
 # female
-# run models per income quartile
 for (i in 1:4) {
     print(paste0(':::: model female quartile ', i))
     fit = brm(le ~ z_relative_mob + z_gini + log_population + log_income +
@@ -97,22 +93,22 @@ for (i in 1:4) {
                    get(paste0('m2_', i)))
     cnames <- list(z_relative_mob = paste0('Q', i))
     t = texreg(models,
-                include.dic = TRUE, include.waic = TRUE,
-                ci.test = FALSE,
-                float.pos = "htp",
-                caption = "Life Expectancy (40) Models",
-                booktabs = TRUE,
-                use.packages = FALSE,
-                dcolumn = TRUE,
-                caption.above = TRUE,
-                scalebox = 0.65,
-                label = "inla_models",
-                # sideways = TRUE,
-                digits = 2,
-                custom.model.names = cmodels,
-                custom.coef.map = cnames,
-                # groups = list("Random Effects" = c(4:5)),
-                custom.note = "95\\% credibility intervals.")
+               include.dic = TRUE, include.waic = TRUE,
+               ci.test = FALSE,
+               float.pos = "htp",
+               caption = "Life Expectancy (40) Models",
+               booktabs = TRUE,
+               use.packages = FALSE,
+               dcolumn = TRUE,
+               caption.above = TRUE,
+               scalebox = 0.65,
+               label = "inla_models",
+               # sideways = TRUE,
+               digits = 2,
+               custom.model.names = cmodels,
+               custom.coef.map = cnames,
+               # groups = list("Random Effects" = c(4:5)),
+               custom.note = "95\\% credibility intervals.")
 
     assign(paste0('tab_', i), t)
     remove(t)
@@ -136,7 +132,7 @@ Income Quartile & \\multicolumn{1}{c}{Base model\\tnote{2}} & \\multicolumn{1}{c
 \\addlinespace\n
 \\hline')
 
-heading =  gsub("\n\n", "\n", heading)
+heading = gsub("\n\n", "\n", heading)
 
 bottom = '\\addlinespace[5pt]\n
 \\hline\n
@@ -148,19 +144,19 @@ bottom = '\\addlinespace[5pt]\n
 \\item [3] Additional covariates model adjust for county log population size, log income, log \\% Black, log \\% Hispanic, log unemployment, z-score income segregation, z-score \\% uninsured, and z-score Medicare expenses.\n\\end{tablenotes}\n\\end{threeparttable}\n
 \\end{table}'
 
-bottom =  gsub("\n\n", "\n", bottom)
+bottom = gsub("\n\n", "\n", bottom)
 
 sep = NA
 for (i in 1:4) {
-  sep[i] = "\n\\addlinespace\n"
+    sep[i] = "\n\\addlinespace\n"
 }
 
 tabs = list(tab_1, tab_2, tab_3, tab_4)
 
 out = list()
 for (i in 1:4) {
-     out[[i]] = strsplit(tabs[[i]], '\\midrule')[[1]][2]
-     out[[i]] = gsub('\n|\n\\\\', '', out[[i]])
+    out[[i]] = strsplit(tabs[[i]], '\\midrule')[[1]][2]
+    out[[i]] = gsub('\n|\n\\\\', '', out[[i]])
 }
 
 
