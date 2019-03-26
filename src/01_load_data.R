@@ -30,14 +30,14 @@ nvars = c('county', 'county_name', 'population', 'statename', 'stateabbrv', 'den
 setnames(cov, ovars, nvars)
 
 total_population = sum(cov$population)
-
+# select covariates
 cov = cov[, ..nvars]
 
 # missing data
 m = countmis(cov)
 m[m>0]
 
-# impute missing by state
+# impute missing by state (median)
 impute = function(x) {
      v = median(x, na.rm = TRUE)
      x[is.na(x)] = v
@@ -51,6 +51,7 @@ m = countmis(cov)
 print(m)
 m[m>0]
 
+# too many missing values
 # table(cov[!is.na(crime_rate) , .(statename, county)], useNA='ifany')
 
 # select complete cases
@@ -62,6 +63,8 @@ le = read_stata('data/cty_leBY_gnd_hhincquartile.dta')
 le = data.table(le)
 
 le[, income_q := paste0('Q', hh_inc_q)]
+
+# race adjusted LE
 setnames(le, c('cty', 'gnd', 'le_raceadj'), c('county', 'gender', 'le'))
 le = le[, .(county, gender, income_q, le)]
 
@@ -71,29 +74,23 @@ dim(df)
 
 # adjust le values (life expectancy at age 40)
 df[, le := le - 40]
-# center
-# df[, le := le - mean(le)]
-
-unique(df$county)
-
-df[county==39051, .(income_q, gender, le, relative_mob)]
 
 # transform variables
 logtran = function(x, center=TRUE) {
-     x = ifelse(x <= 0, log(0.1), log(x))
-     if (center) {
-          return(scale(x, center=TRUE, scale=FALSE))
-     }
-     else {
-          return(x)
-     }
+    x = ifelse(x <= 0, log(0.1), log(x))
+    if (center) {
+        return(scale(x, center=TRUE, scale=FALSE))
+    }
+    else {
+        return(x)
+    }
 }
 
 ztran  = function(x) {
-     m = mean(x, na.rm=TRUE)
-     sm = sd(x, na.rm=TRUE)
-     z = (x - m) / sm
-     return(z)
+    m = mean(x, na.rm=TRUE)
+    sm = sd(x, na.rm=TRUE)
+    z = (x - m) / sm
+    return(z)
 }
 
 # list of variables log (centered)
@@ -113,7 +110,6 @@ df[, paste0('z_', z_vars) := lapply(.SD, ztran), .SDcols=z_vars]
 
 # duplicates
 anyDuplicated(df[, .(county, gender, income_q)])
-length(unique(df$county))
 
 list_variables = c(log_vars, z_vars, 'le')
 df = df[complete.cases(df[, ..list_variables])]
