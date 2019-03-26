@@ -91,7 +91,6 @@ for (i in 1:4) {
 }
 
 # create tables with results
-# relative mobility
 for (i in 1:4) {
     cmodels <- c('Base Model', 'Base Model + Covariates', 'Base Model', 'Base Model + Covariates')
     models <- list(get(paste0('f1_', i)),
@@ -216,145 +215,124 @@ texreg(models,
        file = 'output/tables/stan_relative_mob_models_cov.tex')
 
 
-# predicted values
-# create counterfactual scenarios
+# counterfactual scenarios
+# messy code to create tables
 
+# function to trim values
 specify_decimal = function(x, k) trimws(format(round(x, k), nsmall=k))
 
 # men
-
 # unadjusted
-p_bottom = predict(m1_1, newdata=male[income_qr==1], re_formula = NA,
-        summary=TRUE)
-p_top = predict(m1_4, newdata=male[income_qr==1], re_formula = NA,
-        summary=TRUE)
+p_bottom = predict(m1_1, newdata=male[income_qr == 1], re_formula = NA, summary=TRUE)
+p_top = predict(m1_4, newdata=male[income_qr == 1], re_formula = NA, summary=TRUE)
 
 male_pred_baseline = specify_decimal(quantile(p_top[, 1]-p_bottom[, 1],  prob = c(0.025, .5, 0.975)), 2)
-male_pred_baseline
 
 # counterfactual
 cmale = copy(male)
-cmale = cmale[income_qr==1]
+# select only one quartile
+cmale = cmale[income_qr == 1]
 cmale[, z_relative_mob := max(z_relative_mob)]
 
-c_bottom = predict(m1_1, newdata=cmale, re_formula = NA,
-        summary=TRUE)
-c_top = predict(m1_4, newdata=male[income_qr==1], re_formula = NA,
-        summary=TRUE)
+c_bottom = predict(m1_1, newdata=cmale, re_formula = NA,summary=TRUE)
+c_top = predict(m1_4, newdata=male[income_qr == 1], re_formula = NA, summary=TRUE)
 
-male_con_baseline = specify_decimal(quantile(c_top[, 1]-c_bottom[, 1],  prob = c(0.025, .5, 0.975)), 2)
+male_con_baseline = specify_decimal(quantile(c_top[, 1]-c_bottom[, 1],
+                                    prob = c(0.025, .5, 0.975)), 2)
 male_diff_baseline = specify_decimal(quantile((p_top[, 1]-p_bottom[, 1]) - (c_top[, 1]-c_bottom[, 1]),
-         prob =c(0.025, .5, 0.975)), 2)
-
-
-# adjusted
-p_bottom = predict(m2_1, newdata=male[income_qr==1], re_formula = NA,
-        summary=TRUE)
-p_top = predict(m2_4, newdata=male[income_qr==1], re_formula = NA,
-        summary=TRUE)
-
-male_pred_adjusted= specify_decimal(quantile(p_top[, 1]-p_bottom[, 1],  prob = c(0.025, .5, 0.975)), 2)
-
-# counterfactual
-
-c_bottom = predict(m2_1, newdata=cmale, re_formula = NA,
-        summary=TRUE)
-c_top = predict(m2_4, newdata=male[income_qr==1], re_formula = NA,
-        summary=TRUE)
-
-male_con_adjusted= specify_decimal(quantile(c_top[, 1]-c_bottom[, 1],  prob = c(0.025, .5, 0.975)), 2)
-
-male_diff_adjusted= specify_decimal(
-                                    quantile((p_top[, 1]-p_bottom[, 1])-(c_top[, 1]-c_bottom[, 1]),
                                      prob =c(0.025, .5, 0.975)), 2)
 
+# adjusted
+p_bottom = predict(m2_1, newdata=male[income_qr == 1], re_formula = NA, summary=TRUE)
+p_top = predict(m2_4, newdata=male[income_qr == 1], re_formula = NA, summary=TRUE)
 
-male_row_1 = paste0( c(male_pred_baseline[2], male_con_baseline[2], male_diff_baseline[2],
-                male_pred_adjusted[2], male_con_adjusted[2], male_diff_adjusted[2]),
-               collapse = ' & '
-               )
+male_pred_adjusted= specify_decimal(quantile(p_top[, 1]-p_bottom[, 1],
+                                    prob = c(0.025, .5, 0.975)), 2)
 
-male_row_2 = paste0( c(paste0('[', male_pred_baseline[1], ';\\ ', male_pred_baseline[3], ']'),
-             paste0('[', male_con_baseline[1], ';\\ ', male_con_baseline[3], ']'),
-             paste0('[', male_diff_baseline[1], ';\\ ', male_diff_baseline[3], ']'),
-             paste0('[', male_pred_adjusted[1], ';\\ ', male_pred_adjusted[3], ']'),
-             paste0('[', male_con_adjusted[1], ';\\ ', male_con_adjusted[3], ']'),
-             paste0('[', male_diff_adjusted[1], ';\\ ', male_diff_adjusted[3], ']')
-             ),
-              collapse = ' & '
-             )
+# counterfactual
+c_bottom = predict(m2_1, newdata=cmale, re_formula = NA, summary=TRUE)
+c_top = predict(m2_4, newdata=male[income_qr == 1], re_formula = NA, summary=TRUE)
+
+male_con_adjusted= specify_decimal(quantile(c_top[, 1]-c_bottom[, 1],
+                                   prob = c(0.025, .5, 0.975)), 2)
+
+male_diff_adjusted= specify_decimal(quantile((p_top[, 1]-p_bottom[, 1])-(c_top[, 1]-c_bottom[, 1]),
+                                    prob =c(0.025, .5, 0.975)), 2)
+
+male_row_1 = paste0(c(male_pred_baseline[2], male_con_baseline[2], male_diff_baseline[2],
+                      male_pred_adjusted[2], male_con_adjusted[2], male_diff_adjusted[2]),
+                    collapse = ' & '
+                    )
+
+male_row_2 = paste0(c(paste0('[', male_pred_baseline[1], ';\\ ', male_pred_baseline[3], ']'),
+                      paste0('[', male_con_baseline[1], ';\\ ', male_con_baseline[3], ']'),
+                      paste0('[', male_diff_baseline[1], ';\\ ', male_diff_baseline[3], ']'),
+                      paste0('[', male_pred_adjusted[1], ';\\ ', male_pred_adjusted[3], ']'),
+                      paste0('[', male_con_adjusted[1], ';\\ ', male_con_adjusted[3], ']'),
+                      paste0('[', male_diff_adjusted[1], ';\\ ', male_diff_adjusted[3], ']')
+                      ),
+                    collapse = ' & '
+                   )
 
 male_row_1 = paste0('Men & ', male_row_1, ' \\\\\n')
 male_row_2 = paste0(' & ', male_row_2, ' \\\\\n')
 
-
 # women
-
 # unadjusted
-p_bottom = predict(f1_1, newdata=female[income_qr==1], re_formula = NA,
-        summary=TRUE)
-p_top = predict(f1_4, newdata=female[income_qr==1], re_formula = NA,
-        summary=TRUE)
+p_bottom = predict(f1_1, newdata=female[income_qr == 1], re_formula = NA, summary=TRUE)
+p_top = predict(f1_4, newdata=female[income_qr == 1], re_formula = NA, summary=TRUE)
 
-female_pred_baseline = specify_decimal(quantile(p_top[, 1]-p_bottom[, 1],  prob = c(0.025, .5, 0.975)), 2)
-female_pred_baseline
+female_pred_baseline = specify_decimal(quantile(p_top[, 1]-p_bottom[, 1],
+                                       prob = c(0.025, .5, 0.975)), 2)
 
 # counterfactual
 cfemale = copy(female)
-cfemale = cfemale[income_qr==1]
+cfemale = cfemale[income_qr == 1]
 cfemale[, z_relative_mob := max(z_relative_mob)]
 
-c_bottom = predict(f1_1, newdata=cfemale,re_formula = NA,
-        summary=TRUE)
-c_top = predict(f1_4, newdata=female[income_qr==1], re_formula = NA,
-        summary=TRUE)
+c_bottom = predict(f1_1, newdata=cfemale,re_formula = NA, summary=TRUE)
+c_top = predict(f1_4, newdata=female[income_qr == 1], re_formula = NA, summary=TRUE)
 
-female_con_baseline = specify_decimal(quantile(c_top[, 1]-c_bottom[, 1],  prob = c(0.025, .5, 0.975)), 2)
+female_con_baseline = specify_decimal(quantile(c_top[, 1]-c_bottom[, 1],
+                                      prob = c(0.025, .5, 0.975)), 2)
 female_diff_baseline = specify_decimal(quantile((p_top[, 1]-p_bottom[, 1]) - (c_top[, 1]-c_bottom[, 1]),
-         prob =c(0.025, .5, 0.975)), 2)
-
+                                       prob =c(0.025, .5, 0.975)), 2)
 
 # adjusted
-p_bottom = predict(f2_1, newdata=female[income_qr==1], re_formula = NA,
-        summary=TRUE)
-p_top = predict(f2_4, newdata=female[income_qr==1], re_formula = NA,
-        summary=TRUE)
+p_bottom = predict(f2_1, newdata=female[income_qr == 1], re_formula = NA, summary=TRUE)
+p_top = predict(f2_4, newdata=female[income_qr == 1], re_formula = NA, summary=TRUE)
 
-female_pred_adjusted= specify_decimal(quantile(p_top[, 1]-p_bottom[, 1],  prob = c(0.025, .5, 0.975)), 2)
+female_pred_adjusted= specify_decimal(quantile(p_top[, 1]-p_bottom[, 1],
+                                      prob = c(0.025, .5, 0.975)), 2)
 
 # counterfactual
-c_bottom = predict(f2_1, newdata=cfemale, re_formula = NA,
-        summary=TRUE)
-c_top = predict(f2_4, newdata=female[income_qr==1], re_formula = NA,
-        summary=TRUE)
+c_bottom = predict(f2_1, newdata=cfemale, re_formula = NA, summary=TRUE)
+c_top = predict(f2_4, newdata=female[income_qr == 1], re_formula = NA, summary=TRUE)
 
-female_con_adjusted= specify_decimal(quantile(c_top[, 1]-c_bottom[, 1],  prob = c(0.025, .5, 0.975)), 2)
-female_con_baseline
+female_con_adjusted= specify_decimal(quantile(c_top[, 1]-c_bottom[, 1],
+                                     prob = c(0.025, .5, 0.975)), 2)
 
-female_diff_adjusted= specify_decimal(
-                                    quantile((p_top[, 1]-p_bottom[, 1]) - (c_top[, 1]-c_bottom[, 1]),
-                                     prob =c(0.025, .5, 0.975)), 2)
+female_diff_adjusted= specify_decimal(quantile((p_top[, 1]-p_bottom[, 1]) - (c_top[, 1]-c_bottom[, 1]),
+                                      prob =c(0.025, .5, 0.975)), 2)
 
-female_row_1 = paste0( c(female_pred_baseline[2], female_con_baseline[2], female_diff_baseline[2],
-                female_pred_adjusted[2], female_con_adjusted[2], female_diff_adjusted[2]),
-               collapse = ' & '
-               )
+female_row_1 = paste0(c(female_pred_baseline[2], female_con_baseline[2], female_diff_baseline[2],
+                        female_pred_adjusted[2], female_con_adjusted[2], female_diff_adjusted[2]),
+                      collapse = ' & '
+                     )
 
-female_row_2 = paste0( c(paste0('[', female_pred_baseline[1], ';\\ ', female_pred_baseline[3], ']'),
-             paste0('[', female_con_baseline[1], ';\\ ', female_con_baseline[3], ']'),
-             paste0('[', female_diff_baseline[1], ';\\ ', female_diff_baseline[3], ']'),
-             paste0('[', female_pred_adjusted[1], ';\\ ', female_pred_adjusted[3], ']'),
-             paste0('[', female_con_adjusted[1], ';\\ ', female_con_adjusted[3], ']'),
-             paste0('[', female_diff_adjusted[1], ';\\ ', female_diff_adjusted[3], ']')),
-              collapse = ' & '
-             )
+female_row_2 = paste0(c(paste0('[', female_pred_baseline[1], ';\\ ', female_pred_baseline[3], ']'),
+                        paste0('[', female_con_baseline[1], ';\\ ', female_con_baseline[3], ']'),
+                        paste0('[', female_diff_baseline[1], ';\\ ', female_diff_baseline[3], ']'),
+                        paste0('[', female_pred_adjusted[1], ';\\ ', female_pred_adjusted[3], ']'),
+                        paste0('[', female_con_adjusted[1], ';\\ ', female_con_adjusted[3], ']'),
+                        paste0('[', female_diff_adjusted[1], ';\\ ', female_diff_adjusted[3], ']')),
+                      collapse = ' & '
+                     )
 
 female_row_1 = paste0('Women & ', female_row_1, ' \\\\\n')
 female_row_2 = paste0(' & ', female_row_2, ' \\\\\n')
 
-female_row_1
-male_row_1
-# create table
+# create table counterfactual
 heading = paste0('\\renewcommand{\\arraystretch}{1.5}\n
 \\setlength{\\tabcolsep}{2pt}\n
 \\begin{table}[htp]\n
@@ -398,7 +376,6 @@ for (i in 1:4) {
 
 tabs = list(female_row_1, female_row_2, male_row_1, male_row_2)
 
-
 # export table
 cat(heading,
     sep[[1]], tabs[[1]], tabs[[2]],
@@ -406,3 +383,4 @@ cat(heading,
     bottom,
     file = 'output/tables/counterfactual_gender.tex')
 
+# end
